@@ -8,8 +8,16 @@ Created on Mon May 08 04:49:44 2017
 import numpy as np
 import cv2
 
-im=cv2.imread("lemon.jpeg"  )
-imgray=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+img=cv2.imread("Lemons3.jpg"  )
+hsv= cv2.cvtColor(img, cv2.COLOR_BGR2HSV )
+#Filter by green color
+yellow = np.array([20,0,0])
+green=np.array([50,255,255])
+    
+mask=cv2.inRange(hsv, yellow, green)
+res=cv2.bitwise_and(img, img, mask=mask)
+
+imgray=cv2.cvtColor(res,cv2.COLOR_BGR2GRAY)
 ret,thresh=cv2.threshold(imgray,50,200,cv2.THRESH_BINARY_INV)
 print(thresh)
 th3 = cv2.adaptiveThreshold(imgray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
@@ -45,8 +53,8 @@ markers = markers+1
 # Now, mark the region of unknown with zero
 
 markers[unknown==255] = 0
-markers = cv2.watershed(im,markers)
-im[markers == -1] = [255,0,0]
+markers = cv2.watershed(img,markers)
+img[markers == -1] = [255,0,0]
 print markers
 #cv2.imshow('aaa',im)
 #cv2.waitKey(0)
@@ -65,7 +73,7 @@ for i in circles[0,:]:
     # draw the center of the circle
     cv2.circle(im,(i[0],i[1]),2,(0,0,255),3)
 """
-cv2.imshow('detected circles',im)
+cv2.imshow('detected circles',img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
